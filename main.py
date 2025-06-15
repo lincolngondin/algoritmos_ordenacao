@@ -46,5 +46,23 @@ def test():
             print("Algoritmo está errado!")
             return
 
+# test()
+        
+def partition(A, p, r):
+    index_aleatorio = random.randint(p, r)
+    A[index_aleatorio], A[r] = A[r], A[index_aleatorio]
+    x = A[r] # o pivô é um elemento aleatório e é movido para a última posição
+    i = p - 1 # índice do menor elemento
+    for j in range(p, r):
+        if A[j] <= x:
+            i = i + 1
+            A[j], A[i] = A[i], A[j]
+    A[r], A[i + 1] = A[i + 1], A[r]
+    return i + 1
 
-test()
+def quickSort(A, p, r):
+    if p < r:
+        q = partition(A, p, r)
+        quickSort(A, p, q - 1)
+        quickSort(A, q + 1, r)
+        # não há return. Faz a alteração no próprio vetor
