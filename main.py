@@ -56,7 +56,7 @@ def quickSort(A, p, r):
         q = partition(A, p, r)
         quickSort(A, p, q - 1)
         quickSort(A, q + 1, r)
-        # não há return. Faz a alteração no próprio vetor
+        return A
 
 # quickSort utilizando median-of-three        
 def median_of_three(A, p, r):
@@ -89,4 +89,4 @@ def quickSortMedian(A, p, r):
         q = partition_median(A, p, r)
         quickSortMedian(A, p, q - 1)
         quickSortMedian(A, q + 1, r)
-        # não há return. Faz a alteração no próprio vetor
+        return A
