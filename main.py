@@ -1,7 +1,9 @@
 import random
 import math
+import time
 
-def mergeSort(vetor: list[int]):
+# Algoritmo merge sort
+def MergeSort(vetor: list[int]):
     merge(vetor, 0, len(vetor)-1)
 
 def merge(vetor: list[int], p, r):
@@ -35,18 +37,6 @@ def combinar(vetor: list[int], p, q, r):
             j+=1
     vetor[p:r+1] = w
 
-def test():
-    tries = 100
-    for _ in range(tries):
-        v = [random.randint(1, 10000) for _ in range(10000)]
-        vc = v.copy()
-        vc.sort()
-        mergeSort(v)
-        if v != vc:
-            print("Algoritmo está errado!")
-            return
-
-# test()
 # quickSort utilizando pivô aleatório
 def partition(A, p, r):
     index_aleatorio = random.randint(p, r)
@@ -100,8 +90,83 @@ def quickSortMedian(A, p, r):
         quickSortMedian(A, q + 1, r)
         # não há return. Faz a alteração no próprio vetor
         
-# Exemplo de uso:
-# V = [20, 30, 50, 1, 8, 5]
-# quickSort(V, 0, len(V) - 1)
-# W = [1, 5, 8, 5, 1, 2]
-# quickSortMedian(W, 0, len(W) - 1)
+def QuickSort(vetor):
+    quickSort(vetor, 0, len(vetor)-1)
+
+def QuickSortMedian(vetor):
+    quickSortMedian(vetor, 0, len(vetor)-1)
+
+
+# Funcao que carrega o dataset e retorna a lista com o tamanho desejado
+def carregarDataset(tamanho: int) -> list[int]:
+    return [random.randint(1, tamanho) for _ in range(tamanho)]
+
+# Funcao para o primeiro cenario, embaralha uma copia do vetor de entrada e retorna
+def embaralharDataset(vetor: list[int]) -> list[int]:
+    return random.sample(vetor, k=len(vetor))
+
+# Funcao para o segundo ceneario, ordena uma copia do vetor, embaralha 5 porcento dele e retorna
+def embaralhar5PorcentoDataset(vetor: list[int]) -> list[int]:
+    n = len(vetor)
+    copia = sorted(vetor)
+    # cada troca afeta duas posicoes
+    numTrocas = max(1, (n * 5) // 100 // 2)
+    for _ in range(numTrocas):
+        # Escolhe dois elementos aleatorios do vetor e troca eles
+        i, j = random.sample(range(n), k=2)
+        copia[i], copia[j] = copia[j], copia[i]
+    return copia
+
+# Funcao retorna uma copia inversamente ordenada do vetor
+def inversamenteOrdenado(vetor: list[int]) -> list[int]:
+    return sorted(vetor,reverse=True)
+
+# Retorna o tempo de execução do algoritmo de entrada, mede apenas o tempo de execução,
+# Faz uma copia interna do vetor, portanto não é necessario passar uma copia para ela.
+def medirTempoExecucao(vetor, algoritmo):
+    copia = vetor.copy()
+    t1 = time.perf_counter()
+    algoritmo(copia)
+    t2 = time.perf_counter()
+    return t2-t1
+    
+
+def compararTempos():
+    tamanhos = [10**5, 5*(10**5), 10**6]
+    for n in tamanhos:
+        print(f"Para n = {n}:")
+        dataset = carregarDataset(n)
+        # Cenario 1: Vetor completamente aleatorio
+        C1Dataset = embaralharDataset(dataset)
+        C1tempoMergeSort = medirTempoExecucao(C1Dataset, MergeSort)
+        C1tempoQuickSort = medirTempoExecucao(C1Dataset, QuickSort)
+        C1tempoQuickSortMedian = medirTempoExecucao(C1Dataset, QuickSortMedian)
+        
+        print("    Cenario 1: Vetor completamente aleatorio:")
+        print(f"    MergeSort: {C1tempoMergeSort}s")
+        print(f"    QuickSort: {C1tempoQuickSort}s")
+        print(f"    QuickSortMedian: {C1tempoQuickSortMedian}s")
+
+        # Cenario 2: Vetor quase ordenado (embaralho em 5% das posições)
+        C2Dataset = embaralhar5PorcentoDataset(dataset)
+        C2tempoMergeSort = medirTempoExecucao(C2Dataset, MergeSort)
+        C2tempoQuickSort = medirTempoExecucao(C2Dataset, QuickSort)
+        C2tempoQuickSortMedian = medirTempoExecucao(C2Dataset, QuickSortMedian)
+
+        print("\n    Cenario 2: Vetor quase ordenado:")
+        print(f"    MergeSort: {C2tempoMergeSort}s")
+        print(f"    QuickSort: {C2tempoQuickSort}s")
+        print(f"    QuickSortMedian: {C2tempoQuickSortMedian}s")
+
+        # Cenario 3: Vetor inversamente ordenado
+        C3Dataset = inversamenteOrdenado(dataset)
+        C3tempoMergeSort = medirTempoExecucao(C3Dataset, MergeSort)
+        C3tempoQuickSort = medirTempoExecucao(C3Dataset, QuickSort)
+        C3tempoQuickSortMedian = medirTempoExecucao(C3Dataset, QuickSortMedian)
+
+        print("\n    Cenario 3: Vetor inversamente ordenado:")
+        print(f"    MergeSort: {C3tempoMergeSort}s")
+        print(f"    QuickSort: {C3tempoQuickSort}s")
+        print(f"    QuickSortMedian: {C3tempoQuickSortMedian}s")
+
+compararTempos()
